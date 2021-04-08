@@ -10,6 +10,7 @@ import androidx.navigation.Navigation
 import com.blankj.utilcode.util.ToastUtils
 import com.tencent.bugly.beta.Beta
 import me.hgj.jetpackmvvm.demo.R
+import me.hgj.jetpackmvvm.demo.app.appViewModel
 import me.hgj.jetpackmvvm.demo.app.base.BaseActivity
 import me.hgj.jetpackmvvm.demo.app.util.StatusBarUtil
 import me.hgj.jetpackmvvm.demo.databinding.ActivityMainBinding
@@ -52,7 +53,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     override fun createObserver() {
-        appViewModel.appColor.observe(this, Observer {
+        appViewModel.appColor.observeInActivity(this, Observer {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(it))
             StatusBarUtil.setColor(this, it, 0)
         })

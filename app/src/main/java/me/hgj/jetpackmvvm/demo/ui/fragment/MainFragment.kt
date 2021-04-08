@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_main.*
 import me.hgj.jetpackmvvm.demo.R
+import me.hgj.jetpackmvvm.demo.app.appViewModel
 import me.hgj.jetpackmvvm.demo.app.base.BaseFragment
 import me.hgj.jetpackmvvm.demo.app.ext.init
 import me.hgj.jetpackmvvm.demo.app.ext.initMain
@@ -11,6 +12,7 @@ import me.hgj.jetpackmvvm.demo.app.ext.interceptLongClick
 import me.hgj.jetpackmvvm.demo.app.ext.setUiTheme
 import me.hgj.jetpackmvvm.demo.databinding.FragmentMainBinding
 import me.hgj.jetpackmvvm.demo.viewmodel.state.MainViewModel
+import me.hgj.jetpackmvvm.ext.nav
 
 /**
  * 时间　: 2019/12/27
@@ -38,7 +40,7 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
     }
 
     override fun createObserver() {
-        appViewModel.appColor.observe(viewLifecycleOwner, Observer {
+        appViewModel.appColor.observeInFragment(this, Observer {
             setUiTheme(it, mainBottom)
         })
     }

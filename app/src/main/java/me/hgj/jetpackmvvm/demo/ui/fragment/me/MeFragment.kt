@@ -1,12 +1,12 @@
 package me.hgj.jetpackmvvm.demo.ui.fragment.me
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.blankj.utilcode.util.ToastUtils
 import kotlinx.android.synthetic.main.fragment_me.*
 import me.hgj.jetpackmvvm.demo.R
+import me.hgj.jetpackmvvm.demo.app.appViewModel
 import me.hgj.jetpackmvvm.demo.app.base.BaseFragment
 import me.hgj.jetpackmvvm.demo.app.ext.init
 import me.hgj.jetpackmvvm.demo.app.ext.joinQQGroup
@@ -15,7 +15,6 @@ import me.hgj.jetpackmvvm.demo.app.ext.setUiTheme
 import me.hgj.jetpackmvvm.demo.data.model.bean.BannerResponse
 import me.hgj.jetpackmvvm.demo.data.model.bean.IntegralResponse
 import me.hgj.jetpackmvvm.demo.databinding.FragmentMeBinding
-import me.hgj.jetpackmvvm.demo.ui.activity.TestActivity
 import me.hgj.jetpackmvvm.demo.viewmodel.request.RequestMeViewModel
 import me.hgj.jetpackmvvm.demo.viewmodel.state.MeViewModel
 import me.hgj.jetpackmvvm.ext.nav
@@ -41,14 +40,14 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         mDatabind.vm = mViewModel
         mDatabind.click = ProxyClick()
         appViewModel.appColor.value?.let { setUiTheme(it, me_linear, me_integral) }
-        appViewModel.userinfo.value?.let { mViewModel.name.set(if (it.nickname.isEmpty()) it.username else it.nickname) }
+        appViewModel.userInfo.value?.let { mViewModel.name.set(if (it.nickname.isEmpty()) it.username else it.nickname) }
         me_swipe.init {
             requestMeViewModel.getIntegral()
         }
     }
 
     override fun lazyLoadData() {
-        appViewModel.userinfo.value?.run {
+        appViewModel.userInfo.value?.run {
             me_swipe.isRefreshing = true
             requestMeViewModel.getIntegral()
         }
@@ -68,10 +67,10 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
         })
 
         appViewModel.run {
-            appColor.observe(viewLifecycleOwner, Observer {
+            appColor.observeInFragment(this@MeFragment, Observer {
                 setUiTheme(it, me_linear, me_swipe, me_integral)
             })
-            userinfo.observe(viewLifecycleOwner, Observer {
+            userInfo.observeInFragment(this@MeFragment, Observer {
                 it.notNull({
                     me_swipe.isRefreshing = true
                     mViewModel.name.set(if (it.nickname.isEmpty()) it.username else it.nickname)
@@ -148,7 +147,7 @@ class MeFragment : BaseFragment<MeViewModel, FragmentMeBinding>() {
 
         /**demo*/
         fun demo() {
-            nav().navigateAction(R.id.action_mainfragment_to_demoFragment)
+            nav().navigateAction(R.id.action_to_demoFragment)
         }
 
     }

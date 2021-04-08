@@ -9,12 +9,13 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.kingja.loadsir.core.LoadService
 import com.yanzhenjie.recyclerview.SwipeRecyclerView
 import com.zhpan.bannerview.BannerViewPager
-import kotlinx.android.synthetic.main.include_banner.*
 import kotlinx.android.synthetic.main.include_list.*
 import kotlinx.android.synthetic.main.include_recyclerview.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import me.hgj.jetpackmvvm.demo.R
+import me.hgj.jetpackmvvm.demo.app.appViewModel
 import me.hgj.jetpackmvvm.demo.app.base.BaseFragment
+import me.hgj.jetpackmvvm.demo.app.eventViewModel
 import me.hgj.jetpackmvvm.demo.app.ext.*
 import me.hgj.jetpackmvvm.demo.app.weight.banner.HomeBannerAdapter
 import me.hgj.jetpackmvvm.demo.app.weight.banner.HomeBannerViewHolder
@@ -30,7 +31,6 @@ import me.hgj.jetpackmvvm.demo.viewmodel.state.HomeViewModel
 import me.hgj.jetpackmvvm.ext.nav
 import me.hgj.jetpackmvvm.ext.navigateAction
 import me.hgj.jetpackmvvm.ext.parseState
-import splitties.collections.forEachReversedByIndex
 
 /**
  * 作者　: hegaojian
@@ -183,7 +183,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         })
         appViewModel.run {
             //监听账户信息是否改变 有值时(登录)将相关的数据设置为已收藏，为空时(退出登录)，将已收藏的数据变为未收藏
-            userinfo.observe(viewLifecycleOwner, Observer {
+            userInfo.observeInFragment(this@HomeFragment, Observer {
                 if (it != null) {
                     it.collectIds.forEach { id ->
                         for (item in articleAdapter.data) {
@@ -201,15 +201,15 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                 articleAdapter.notifyDataSetChanged()
             })
             //监听全局的主题颜色改变
-            appColor.observe(viewLifecycleOwner, Observer {
+            appColor.observeInFragment(this@HomeFragment) {
                 setUiTheme(it, toolbar, floatbtn, swipeRefresh, loadsir, footView)
-            })
+            }
             //监听全局的列表动画改编
-            appAnimation.observe(viewLifecycleOwner, Observer {
+            appAnimation.observeInFragment(this@HomeFragment) {
                 articleAdapter.setAdapterAnimation(it)
-            })
+            }
             //监听全局的收藏信息 收藏的Id跟本列表的数据id匹配则需要更新
-            eventViewModel.collectEvent.observeInFragment(this@HomeFragment, Observer {
+            eventViewModel.collectEvent.observeInFragment(this@HomeFragment) {
                 for (index in articleAdapter.data.indices) {
                     if (articleAdapter.data[index].id == it.id) {
                         articleAdapter.data[index].collect = it.collect
@@ -217,7 +217,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
                         break
                     }
                 }
-            })
+            }
         }
     }
 }

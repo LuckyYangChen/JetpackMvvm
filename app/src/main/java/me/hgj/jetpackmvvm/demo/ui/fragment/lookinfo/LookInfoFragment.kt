@@ -12,7 +12,9 @@ import kotlinx.android.synthetic.main.include_list.*
 import kotlinx.android.synthetic.main.include_recyclerview.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import me.hgj.jetpackmvvm.demo.R
+import me.hgj.jetpackmvvm.demo.app.appViewModel
 import me.hgj.jetpackmvvm.demo.app.base.BaseFragment
+import me.hgj.jetpackmvvm.demo.app.eventViewModel
 import me.hgj.jetpackmvvm.demo.app.ext.*
 import me.hgj.jetpackmvvm.demo.app.weight.recyclerview.SpaceItemDecoration
 import me.hgj.jetpackmvvm.demo.data.model.bean.CollectBus
@@ -124,7 +126,7 @@ class LookInfoFragment : BaseFragment<LookInfoViewModel, FragmentLookinfoBinding
         })
         appViewModel.run {
             //监听账户信息是否改变 有值时(登录)将相关的数据设置为已收藏，为空时(退出登录)，将已收藏的数据变为未收藏
-            userinfo.observe(viewLifecycleOwner, Observer {
+            userInfo.observeInFragment(this@LookInfoFragment) {
                 if (it != null) {
                     it.collectIds.forEach { id ->
                         for (item in articleAdapter.data) {
@@ -140,7 +142,7 @@ class LookInfoFragment : BaseFragment<LookInfoViewModel, FragmentLookinfoBinding
                     }
                 }
                 articleAdapter.notifyDataSetChanged()
-            })
+            }
             //监听全局的收藏信息 收藏的Id跟本列表的数据id匹配则需要更新
             eventViewModel.collectEvent.observeInFragment(this@LookInfoFragment, Observer {
                 for (index in articleAdapter.data.indices) {

@@ -9,6 +9,7 @@ import com.kingja.loadsir.core.LoadService
 import kotlinx.android.synthetic.main.include_list.*
 import kotlinx.android.synthetic.main.include_recyclerview.*
 import me.hgj.jetpackmvvm.demo.R
+import me.hgj.jetpackmvvm.demo.app.appViewModel
 import me.hgj.jetpackmvvm.demo.app.base.BaseFragment
 import me.hgj.jetpackmvvm.demo.app.ext.*
 import me.hgj.jetpackmvvm.demo.app.weight.recyclerview.SpaceItemDecoration
@@ -80,11 +81,11 @@ class NavigationFragment : BaseFragment<TreeViewModel, IncludeListBinding>() {
         })
         appViewModel.run {
             //监听全局的主题颜色改变
-            appColor.observe(viewLifecycleOwner, Observer {
+            appColor.observeInFragment(this@NavigationFragment, Observer {
                 setUiTheme(it, floatbtn, swipeRefresh, loadsir)
             })
             //监听全局的列表动画改编
-            appAnimation.observe(viewLifecycleOwner, Observer {
+            appAnimation.observeInFragment(this@NavigationFragment, Observer {
                 navigationAdapter.setAdapterAnimation(it)
             })
         }

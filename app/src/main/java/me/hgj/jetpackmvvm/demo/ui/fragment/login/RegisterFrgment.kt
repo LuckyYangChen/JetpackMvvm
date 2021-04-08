@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_register.*
 import kotlinx.android.synthetic.main.include_toolbar.*
 import me.hgj.jetpackmvvm.demo.R
+import me.hgj.jetpackmvvm.demo.app.appViewModel
 import me.hgj.jetpackmvvm.demo.app.base.BaseFragment
 import me.hgj.jetpackmvvm.demo.app.ext.initClose
 import me.hgj.jetpackmvvm.demo.app.ext.showMessage
@@ -50,7 +51,7 @@ class RegisterFrgment : BaseFragment<LoginRegisterViewModel, FragmentRegisterBin
                 parseState(resultState, {
                     CacheUtil.setIsLogin(true)
                     CacheUtil.setUser(it)
-                    appViewModel.userinfo.value = it
+                    appViewModel.userInfo.value = it
                     nav().navigateAction(R.id.action_registerFrgment_to_mainFragment)
                 }, {
                     showMessage(it.errorMsg)
@@ -62,19 +63,19 @@ class RegisterFrgment : BaseFragment<LoginRegisterViewModel, FragmentRegisterBin
     inner class ProxyClick {
         /**清空*/
         fun clear() {
-            mViewModel.username.value=""
+            mViewModel.username.set("")
         }
 
         /**注册*/
         fun register() {
             when {
-                mViewModel.username.value.isEmpty() -> showMessage("请填写账号")
+                mViewModel.username.get().isEmpty() -> showMessage("请填写账号")
                 mViewModel.password.get().isEmpty() -> showMessage("请填写密码")
                 mViewModel.password2.get().isEmpty() -> showMessage("请填写确认密码")
                 mViewModel.password.get().length < 6 -> showMessage("密码最少6位")
                 mViewModel.password.get() != mViewModel.password2.get() -> showMessage("密码不一致")
                 else -> requestLoginRegisterViewModel.registerAndlogin(
-                    mViewModel.username.value,
+                    mViewModel.username.get(),
                     mViewModel.password.get()
                 )
             }
